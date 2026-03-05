@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MathBlog — Matemáticas para todos</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F0E8;
+    --ink: #1A1510;
+    --accent: #D4450C;
+    --gold: #E8A020;
+    --teal: #0B6E6E;
+    --card: #FDFAF4;
+    --border: #D8D0C0;
+    --muted: #7A6F60;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  html { scroll-behavior: smooth; }
+  
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 0 5vw;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 3px solid var(--accent);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+    color: var(--bg);
+    text-decoration: none;
+  }
+  .logo span { color: var(--accent); }
+  nav { display: flex; gap: 1.5rem; }
+  nav a {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--border);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--gold); }
+
+  /* ─── HERO ─── */
+  .hero {
+    padding: 7rem 5vw 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '∑';
+    position: absolute;
+    right: 5vw;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 22rem;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    color: rgba(26,21,16,0.05);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    padding: 0.25rem 0.75rem;
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+  }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    max-width: 18ch;
+    margin-bottom: 1.5rem;
+  }
+  h1 em { font-style: italic; color: var(--teal); font-weight: 300; font-family: 'Source Serif 4', serif; }
+  .hero p {
+    max-width: 55ch;
+    font-size: 1.1rem;
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+    font-style: italic;
+  }
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .hero-meta strong { color: var(--ink); }
+
+  /* ─── DIVIDER ─── */
+  .rule {
+    border: none;
+    border-top: 1.5px solid var(--border);
+    margin: 0 5vw;
+  }
+
+  /* ─── SECTION LABEL ─── */
+  .section-header {
+    padding: 3rem 5vw 1.5rem;
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+  }
+  .section-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .section-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    margin-left: 1rem;
+  }
+
+  /* ─── POSTS GRID ─── */
+  .posts {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 2px;
+    padding: 0 5vw 5vw;
+  }
+
+  /* ─── POST CARD ─── */
+  .post-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .post-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(26,21,16,0.12);
+    z-index: 2;
+  }
+  .post-card:hover .post-thumb { transform: scale(1.04); }
+
+  .post-thumb-wrap {
+    height: 220px;
+    overflow: hidden;
+    position: relative;
+  }
+  .post-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+    display: block;
+  }
+  .post-thumb-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 6rem;
+    transition: transform 0.4s ease;
+  }
+  .post-category {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+  }
+  .cat-numeros { background: var(--accent); color: white; }
+  .cat-algebra { background: var(--teal); color: white; }
+  .cat-geometria { background: var(--gold); color: var(--ink); }
+  .cat-icfes { background: var(--ink); color: var(--bg); }
+
+  .post-body {
+    padding: 1.5rem;
+  }
+  .post-meta {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+  }
+  .post-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+    color: var(--ink);
+  }
+  .post-excerpt {
+    font-size: 0.92rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+  }
+  .post-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .read-btn {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--accent);
+    padding-bottom: 1px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .read-btn:hover { color: var(--teal); border-color: var(--teal); }
+  .read-time {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.68rem;
+    color: var(--border);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── FULL ARTICLE MODAL ─── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,21,16,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    overflow-y: auto;
+    padding: 2rem 1rem;
+    animation: fadeIn 0.2s ease;
+  }
+  .modal-overlay.open { display: block; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal {
+    max-width: 760px;
+    margin: 0 auto;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    padding: 3rem 3.5rem;
+    position: relative;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  .modal-close {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.5rem;
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 800;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    line-height: 1;
+    transition: color 0.2s;
+  }
+  .modal-close:hover { color: var(--accent); }
+
+  .modal-cat {
+    display: inline-block;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+    margin-bottom: 1.25rem;
+  }
+  .modal h1 {
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    max-width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  .modal-byline {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1.5px solid var(--border);
+  }
+  .modal-img-wrap {
+    margin: 0 -3.5rem 2rem;
+    height: 320px;
+    overflow: hidden;
+  }
+  .modal-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .modal-img-wrap .placeholder-art {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10rem;
+  }
+  .modal-content p {
+    margin-bottom: 1.2rem;
+    font-size: 1.02rem;
+    color: var(--ink);
+    line-height: 1.8;
+  }
+  .modal-content h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin: 2rem 0 0.75rem;
+    letter-spacing: -0.01em;
+  }
+  .modal-content ul {
+    padding-left: 1.5rem;
+    margin-bottom: 1.2rem;
+  }
+  .modal-content ul li {
+    margin-bottom: 0.4rem;
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  /* Math box */
+  .math-box {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+    border-left: 4px solid var(--accent);
+    font-family: 'Courier New', monospace;
+    font-size: 1.05rem;
+    line-height: 1.9;
+    border-radius: 0 4px 4px 0;
+  }
+  .math-box .label {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .math-box .formula {
+    font-size: 1.2rem;
+    color: var(--gold);
+    font-weight: bold;
+  }
+
+  /* Tip box */
+  .tip-box {
+    background: #EAF4F4;
+    border: 1.5px solid var(--teal);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .tip-box strong {
+    font-family: 'Syne', sans-serif;
+    color: var(--teal);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+
+  /* Resources */
+  .resources {
+    background: #FEF7EC;
+    border: 1.5px solid var(--gold);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .resources strong {
+    font-family: 'Syne', sans-serif;
+    color: #9B6A00;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+  .resources a {
+    display: block;
+    color: var(--teal);
+    text-decoration: none;
+    font-size: 0.92rem;
+    margin-bottom: 0.4rem;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: 0.03em;
+  }
+  .resources a::before { content: '→ '; color: var(--gold); }
+  .resources a:hover { color: var(--accent); }
+
+  /* Video embed placeholder */
+  .video-embed {
+    background: var(--ink);
+    border-radius: 6px;
+    padding: 3rem 2rem;
+    text-align: center;
+    margin: 1.5rem 0;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .video-embed::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #1A1510 0%, #2D2518 100%);
+  }
+  .video-embed .play-btn {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.4rem;
+  }
+  .video-embed p {
+    position: relative;
+    color: var(--bg) !important;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.82rem !important;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0 !important;
+  }
+  .video-embed small {
+    position: relative;
+    display: block;
+    color: var(--muted);
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+  }
+
+  /* ─── SIDEBAR ─── */
+  .main-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 0;
+    padding: 0 5vw 5vw;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+  .sidebar {
+    padding-left: 3rem;
+    padding-top: 0;
+    border-left: 1.5px solid var(--border);
+  }
+  .sidebar-widget {
+    margin-bottom: 2.5rem;
+  }
+  .sidebar-widget h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .tag-cloud { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .tag {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.7rem;
+    border: 1.5px solid var(--border);
+    border-radius: 2px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+  }
+  .tag:hover { border-color: var(--accent); color: var(--accent); background: #FEF2EE; }
+  
+  .formula-pill {
+    font-family: 'Courier New', monospace;
+    background: var(--ink);
+    color: var(--gold);
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    display: block;
+    border-radius: 3px;
+  }
+
+  .icfes-banner {
+    background: var(--teal);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 4px;
+    text-align: center;
+  }
+  .icfes-banner h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    margin-bottom: 0.4rem;
+  }
+  .icfes-banner p {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+  .icfes-btn {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--ink);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.5rem 1.25rem;
+    border-radius: 2px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s;
+  }
+  .icfes-btn:hover { opacity: 0.85; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--ink);
+    color: var(--border);
+    padding: 3rem 5vw;
+    margin-top: 3rem;
+    border-top: 3px solid var(--accent);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2rem;
+    font-size: 0.88rem;
+  }
+  footer h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--bg);
+    margin-bottom: 0.75rem;
+  }
+  footer p { line-height: 1.6; color: var(--muted); font-size: 0.85rem; }
+  footer a { color: var(--gold); text-decoration: none; display: block; margin-bottom: 0.35rem; font-size: 0.85rem; }
+  footer a:hover { color: var(--accent); }
+  .footer-brand { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--bg); margin-bottom: 0.5rem; }
+  .footer-brand span { color: var(--accent); }
+  .footer-copy {
+    grid-column: 1 / -1;
+    border-top: 1px solid #333;
+    padding-top: 1.5rem;
+    text-align: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  @media (max-width: 900px) {
+    .main-layout { grid-template-columns: 1fr; }
+    .sidebar { border-left: none; border-top: 1.5px solid var(--border); padding-left: 0; padding-top: 2rem; }
+    footer { grid-template-columns: 1fr; }
+    .modal { padding: 2rem 1.5rem; }
+    .modal-img-wrap { margin: 0 -1.5rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo">Math<span>Blog</span></a>
+    <nav>
+      <a href="#entradas">Entradas</a>
+      <a href="#recursos">Recursos</a>
+      <a href="#icfes">ICFES</a>
+      <a href="#acerca">Acerca</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">Blog de Matemáticas Para Todos</div>
+  <h1>Matemáticas que <em>cobran sentido</em> en tu mundo</h1>
+  <p>Contenido alineado con los Estándares del MEN, pensado para estudiantes de 6° a 11° grado. Aprende, practica y prepárate para las Pruebas Saber.</p>
+  <div class="hero-meta">
+    <div><strong>3</strong> Entradas publicadas</div>
+    <div><strong>Grados</strong> 6° — 11°</div>
+    <div><strong>Alineado</strong> con el MEN</div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- MAIN LAYOUT -->
+<div class="main-layout" id="entradas">
+  <!-- POSTS -->
+  <main>
+    <div class="section-header"><h2>Entradas recientes</h2></div>
+    <div class="posts">
+
+      <!-- CARD 1 -->
+      <article class="post-card" onclick="openModal('modal1')">
+        <div class="post-thumb-wrap">
+          <div class="post-thumb-placeholder" style="background: linear-gradient(135deg,#1A1510,#3D2B1A);">🔢</div>
+          <span class="post-category cat-numeros">Números</span>
+        </div>
+        <div class="post-body">
+          <div class="post-meta">12 de feb, 2026 · Grado 6°</div>
+          <h2 class="post-title">MCM y MCD: Las herramientas secretas de los números</h2>
+          <p class="post-excerpt">Descubre cómo el Mínimo Común Múltiplo y el Máximo Común Divisor están escondidos en el mercado de Barichara, en las recetas de la abuela y hasta en los torneos de fútbol.</p>
+          <div class="post-footer">
+            <a class="read-btn" href="#">Leer entrada</a>
+            <span class="read-time">8 min lectura</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- CARD 2 -->
+      <article class="post-card" onclick="openModal('modal2')">
+        <div class="post-thumb-wrap">
+          <div class="post-thumb-placeholder" style="background: linear-gradient(135deg,#0B3D3D,#0B6E6E);">📐</div>
+          <span class="post-category cat-geometria">Geometría</span>
+        </div>
+        <div class="post-body">
+          <div class="post-meta">28 de ene, 2026 · Grado 9°</div>
+          <h2 class="post-title">El Teorema de Pitágoras en la arquitectura de Cartagena</h2>
+          <p class="post-excerpt">Las murallas del Centro Histórico de Cartagena guardan un secreto geométrico. Entendamos el teorema más famoso de la geometría con ejemplos reales del patrimonio colombiano.</p>
+          <div class="post-footer">
+            <a class="read-btn" href="#">Leer entrada</a>
+            <span class="read-time">10 min lectura</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- CARD 3 -->
+      <article class="post-card" onclick="openModal('modal3')">
+        <div class="post-thumb-wrap">
+          <div class="post-thumb-placeholder" style="background: linear-gradient(135deg,#6B2800,#D4450C);">📊</div>
+          <span class="post-category cat-icfes">ICFES Saber</span>
+        </div>
+        <div class="post-body">
+          <div class="post-meta">15 de feb, 2026 · Grado 11°</div>
+          <h2 class="post-title">Estadística y probabilidad: interpreta datos como un experto</h2>
+          <p class="post-excerpt">Desde las estadísticas del Carnaval de Barranquilla hasta las encuestas electorales: aprende a leer gráficas, calcular medidas de tendencia central y resolver preguntas tipo ICFES.</p>
+          <div class="post-footer">
+            <a class="read-btn" href="#">Leer entrada</a>
+            <span class="read-time">12 min lectura</span>
+          </div>
+        </div>
+      </article>
+
+    </div><!-- /posts -->
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="recursos">
+    <div class="sidebar-widget">
+      <h3>Fórmulas rápidas</h3>
+      <code class="formula-pill">MCD(a,b) = Máximo Común Divisor</code>
+      <code class="formula-pill">MCM(a,b) = Mínimo Común Múltiplo</code>
+      <code class="formula-pill">a² + b² = c²  (Pitágoras)</code>
+      <code class="formula-pill">Promedio = Σx / n</code>
+      <code class="formula-pill">P(A) = Probabilidad</code>
+    </div>
+
+    <div class="sidebar-widget" id="icfes">
+      <div class="icfes-banner">
+        <h4>🎯 Prepárate para las Pruebas Saber</h4>
+        <p>Recursos oficiales del ICFES para practicar antes del examen</p>
+        <a class="icfes-btn" href="https://www.icfes.gov.co" target="_blank" rel="noopener">Ir al ICFES →</a>
+      </div>
+    </div>
+
+    <div class="sidebar-widget">
+      <h3>Temas</h3>
+      <div class="tag-cloud">
+        <button class="tag">Números enteros</button>
+        <button class="tag">Factorización</button>
+        <button class="tag">MCD · MCM</button>
+        <button class="tag">Fracciones</button>
+        <button class="tag">Álgebra</button>
+        <button class="tag">Geometría</button>
+        <button class="tag">Trigonometría</button>
+        <button class="tag">Estadística</button>
+        <button class="tag">Probabilidad</button>
+        <button class="tag">Funciones</button>
+        <button class="tag">ICFES</button>
+      </div>
+    </div>
+
+    <div class="sidebar-widget">
+      <h3>Recursos externos</h3>
+      <a href="https://www.khanacademy.org/math?lang=es" target="_blank" rel="noopener" style="color:var(--teal);display:block;margin-bottom:0.4rem;font-family:'Syne',sans-serif;font-weight:700;font-size:0.82rem;">→ Khan Academy en Español</a>
+      <a href="https://www.geogebra.org/?lang=es" target="_blank" rel="noopener" style="color:var(--teal);display:block;margin-bottom:0.4rem;font-family:'Syne',sans-serif;font-weight:700;font-size:0.82rem;">→ GeoGebra (geometría interactiva)</a>
+      <a href="https://www.desmos.com/calculator?lang=es" target="_blank" rel="noopener" style="color:var(--teal);display:block;margin-bottom:0.4rem;font-family:'Syne',sans-serif;font-weight:700;font-size:0.82rem;">→ Desmos — Graficadora online</a>
+      <a href="https://www.mineducacion.gov.co" target="_blank" rel="noopener" style="color:var(--teal);display:block;font-family:'Syne',sans-serif;font-weight:700;font-size:0.82rem;">→ MEN — Estándares Básicos</a>
+    </div>
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer id="acerca">
+  <div>
+    <div class="footer-brand">Math<span>Blog</span></div>
+    <p>Blog educativo de matemáticas para estudiantes de bachillerato en Colombia. Contenido alineado con los lineamientos curriculares del Ministerio de Educación Nacional.</p>
+  </div>
+  <div>
+    <h4>Navegación</h4>
+    <a href="#entradas">Entradas del blog</a>
+    <a href="#recursos">Recursos</a>
+    <a href="https://www.icfes.gov.co" target="_blank">Pruebas Saber ICFES</a>
+    <a href="https://www.mineducacion.gov.co" target="_blank">Ministerio de Educación</a>
+  </div>
+  <div>
+    <h4>Sobre este blog</h4>
+    <p>Creado por Yair Esteban Payares Martinez. Los contenidos buscan contextualizar las matemáticas en realidades culturales y geográficas de Colombia.</p>
+  </div>
+  <div class="footer-copy">© 2026 MathBlog · Blog educativo · Colombia · Hecho con 💛💙❤️ para nuestros estudiantes</div>
+</footer>
+
+
+<!-- ════════════════════════════ MODALS ════════════════════════════ -->
+
+<!-- MODAL 1: MCM y MCD -->
+<div class="modal-overlay" id="modal1" onclick="closeOnOverlay(event,'modal1')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal1')">✕</button>
+    <span class="modal-cat cat-numeros">Números · Grado 6°</span>
+    <h1>MCM y MCD: Las herramientas secretas de los números</h1>
+    <p class="modal-byline">12 de febrero, 2026 · 8 min lectura · MEN: Pensamiento numérico y sistemas numéricos</p>
+    <div class="modal-img-wrap">
+      <div class="placeholder-art" style="background:linear-gradient(135deg,#1A1510 0%,#4A2C10 50%,#D4450C 100%);">🔢</div>
+    </div>
+    <div class="modal-content">
+      <p>¿Sabías que cuando las vendedoras del mercado de <strong>Barichara (Santander)</strong> organizan sus puestos en filas exactas están usando, sin saberlo, el Mínimo Común Múltiplo? Las matemáticas siempre han estado ahí, esperando ser descubiertas.</p>
+
+      <h3>¿Qué es el Máximo Común Divisor (MCD)?</h3>
+      <p>El MCD de dos o más números es el mayor número que los divide a todos exactamente. Es muy útil cuando necesitas <strong>repartir en grupos iguales</strong> sin que sobre nada.</p>
+
+      <div class="math-box">
+        <span class="label">Ejemplo — MCD(24, 36)</span>
+        24 = 2³ × 3<br>
+        36 = 2² × 3²<br>
+        <span class="formula">MCD = 2² × 3 = 12</span>
+      </div>
+
+      <div class="tip-box">
+        <strong>💡 Tip contextualizado</strong>
+        Una artesana de Mompox tiene 24 aretes de plata y 36 pulseras de filigrana. Quiere armar paquetes iguales sin mezclar tipos. El MCD(24, 36) = 12 le dice que puede hacer exactamente 12 paquetes de 2 aretes y 3 pulseras cada uno.
+      </div>
+
+      <h3>¿Qué es el Mínimo Común Múltiplo (MCM)?</h3>
+      <p>El MCM es el número más pequeño que es múltiplo de todos los números dados. Aparece cuando necesitas <strong>sincronizar eventos</strong> o encontrar el momento en que varias cosas coinciden.</p>
+
+      <div class="math-box">
+        <span class="label">Ejemplo — MCM(4, 6)</span>
+        4 = 2²<br>
+        6 = 2 × 3<br>
+        <span class="formula">MCM = 2² × 3 = 12</span>
+      </div>
+
+      <div class="tip-box">
+        <strong>💡 Tip ICFES</strong>
+        En las Pruebas Saber, el MCM y MCD aparecen en situaciones de "sincronización" (cada cuántos días coinciden dos eventos) y de "distribución equitativa". Identifica estas palabras clave en el enunciado.
+      </div>
+
+      <h3>Método de descomposición en factores primos</h3>
+      <p>El método más seguro para encontrar MCD y MCM es descomponer cada número en factores primos usando el árbol de factorización:</p>
+      <ul>
+        <li>Divide el número entre el primo más pequeño que lo divida exactamente.</li>
+        <li>Repite con el cociente hasta llegar a 1.</li>
+        <li>Para MCD: toma los factores <strong>comunes</strong> con la <strong>menor</strong> potencia.</li>
+        <li>Para MCM: toma <strong>todos</strong> los factores con la <strong>mayor</strong> potencia.</li>
+      </ul>
+
+      <h3>🎬 Video recomendado</h3>
+      <div class="video-embed" onclick="window.open('https://www.khanacademy.org/math/cc-sixth-grade-math/cc-6th-factors-and-multiples','_blank')">
+        <div class="play-btn">▶</div>
+        <p>MCM y MCD — Khan Academy en Español</p>
+        <small>Haz clic para ver en khanacademy.org</small>
+      </div>
+
+      <div class="resources">
+        <strong>📚 Recursos para profundizar</strong>
+        <a href="https://www.khanacademy.org/math/cc-sixth-grade-math/cc-6th-factors-and-multiples" target="_blank">Khan Academy: Factores y múltiplos (grado 6-7)</a>
+        <a href="https://www.geogebra.org/m/xm5v8ykk" target="_blank">GeoGebra: Árbol de factores interactivo</a>
+        <a href="https://www.mineducacion.gov.co/1759/articles-116042_archivo_pdf2.pdf" target="_blank">MEN: Estándares Básicos de Matemáticas</a>
+        <a href="https://www.icfes.gov.co/documents/20143/1500683/Guia+de+orientacion+saber+9+2019.pdf" target="_blank">ICFES: Guía de orientación Saber 9°</a>
+      </div>
+
+      <h3>Practica</h3>
+      <p>Resuelve: En el Carnaval de Barranquilla, una comparsa desfila cada 6 días y otra cada 8 días. Si hoy desfilaron juntas, ¿en cuántos días volverán a coincidir? (Respuesta: MCM(6,8) = 24 días)</p>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 2: Pitágoras -->
+<div class="modal-overlay" id="modal2" onclick="closeOnOverlay(event,'modal2')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal2')">✕</button>
+    <span class="modal-cat cat-geometria">Geometría · Grado 9°</span>
+    <h1>El Teorema de Pitágoras en la arquitectura de Cartagena</h1>
+    <p class="modal-byline">28 de enero, 2026 · 10 min lectura · MEN: Pensamiento espacial y sistemas geométricos</p>
+    <div class="modal-img-wrap">
+      <div class="placeholder-art" style="background:linear-gradient(135deg,#062828 0%,#0B6E6E 60%,#1A8C8C 100%);">🏰</div>
+    </div>
+    <div class="modal-content">
+      <p>Las murallas del Centro Histórico de <strong>Cartagena de Indias</strong>, Patrimonio de la Humanidad, son un monumento vivo al uso magistral de la geometría. Los ingenieros militares del siglo XVII aplicaban el Teorema de Pitágoras para construir ángulos rectos perfectos sin instrumentos modernos.</p>
+
+      <h3>El Teorema</h3>
+      <p>En todo triángulo rectángulo, el cuadrado de la hipotenusa (el lado opuesto al ángulo recto) es igual a la suma de los cuadrados de los catetos.</p>
+
+      <div class="math-box">
+        <span class="label">Teorema de Pitágoras</span>
+        <span class="formula">a² + b² = c²</span><br><br>
+        Donde: <strong>c</strong> = hipotenusa (lado más largo)<br>
+        <strong>a, b</strong> = catetos (lados que forman el ángulo recto)
+      </div>
+
+      <h3>Aplicación: La técnica de la cuerda de 12 nudos</h3>
+      <p>Los constructores de las murallas de Cartagena usaban una cuerda con 12 nudos equidistantes para trazar ángulos rectos. Si formaban un triángulo de lados 3, 4 y 5 nudos, obtenían un ángulo recto perfecto. ¿Por qué funciona?</p>
+
+      <div class="math-box">
+        <span class="label">Verificación: Terna pitagórica (3, 4, 5)</span>
+        3² + 4² = 9 + 16 = 25<br>
+        <span class="formula">√25 = 5 ✓</span>
+      </div>
+
+      <div class="tip-box">
+        <strong>📐 Ternas pitagóricas más comunes</strong>
+        Memoriza estas ternas para el ICFES: (3,4,5) · (5,12,13) · (8,15,17) · (7,24,25). Sus múltiplos también son ternas: (6,8,10), (9,12,15), etc.
+      </div>
+
+      <h3>Cómo encontrar la hipotenusa o un cateto</h3>
+      <ul>
+        <li><strong>Hipotenusa desconocida:</strong> c = √(a² + b²)</li>
+        <li><strong>Cateto desconocido:</strong> a = √(c² − b²)</li>
+      </ul>
+
+      <div class="math-box">
+        <span class="label">Problema aplicado</span>
+        Una escalera de 5 m se apoya contra una pared. El pie de la escalera está a 3 m de la pared. ¿A qué altura llega?<br><br>
+        a² = 5² − 3² = 25 − 9 = 16<br>
+        <span class="formula">a = √16 = 4 metros ✓</span>
+      </div>
+
+      <h3>Extensiones: Distancia entre dos puntos</h3>
+      <p>En el plano cartesiano, la distancia entre dos puntos P₁(x₁, y₁) y P₂(x₂, y₂) se calcula con una forma del teorema de Pitágoras:</p>
+
+      <div class="math-box">
+        <span class="label">Fórmula de distancia</span>
+        <span class="formula">d = √[(x₂-x₁)² + (y₂-y₁)²]</span>
+      </div>
+
+      <h3>🎬 Video recomendado</h3>
+      <div class="video-embed" onclick="window.open('https://www.khanacademy.org/math/basic-geo/basic-geo-pythagorean-topic','_blank')">
+        <div class="play-btn">▶</div>
+        <p>Teorema de Pitágoras — Khan Academy</p>
+        <small>Haz clic para ver en khanacademy.org</small>
+      </div>
+
+      <div class="resources">
+        <strong>📚 Recursos para profundizar</strong>
+        <a href="https://www.geogebra.org/m/HPcBhkM6" target="_blank">GeoGebra: Demostración visual interactiva de Pitágoras</a>
+        <a href="https://www.khanacademy.org/math/basic-geo/basic-geo-pythagorean-topic" target="_blank">Khan Academy: Teorema de Pitágoras completo</a>
+        <a href="https://patrimoniocultural.gov.co/cartagena" target="_blank">Patrimonio Cultural: Centro Histórico de Cartagena</a>
+        <a href="https://www.desmos.com/geometry" target="_blank">Desmos Geometry: Construye triángulos interactivos</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 3: Estadística -->
+<div class="modal-overlay" id="modal3" onclick="closeOnOverlay(event,'modal3')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal3')">✕</button>
+    <span class="modal-cat cat-icfes">Estadística · Grado 11° · ICFES</span>
+    <h1>Estadística y probabilidad: interpreta datos como un experto</h1>
+    <p class="modal-byline">25 de enero, 2026 · 12 min lectura · MEN: Pensamiento aleatorio y sistemas de datos</p>
+    <div class="modal-img-wrap">
+      <div class="placeholder-art" style="background:linear-gradient(135deg,#3D0C00 0%,#8B2000 50%,#D4450C 100%);">📊</div>
+    </div>
+    <div class="modal-content">
+      <p>El <strong>Carnaval de Barranquilla</strong>, Patrimonio Oral e Inmaterial de la Humanidad, reúne a más de 1.5 millones de personas en 4 días de fiesta. ¿Cómo se organizan esas cifras? ¿Cómo sabemos cuántos turistas vienen de cada departamento? La respuesta es: con estadística.</p>
+
+      <h3>Medidas de tendencia central</h3>
+      <p>Permiten resumir un conjunto de datos en un solo número representativo:</p>
+
+      <div class="math-box">
+        <span class="label">Media aritmética (promedio)</span>
+        <span class="formula">x̄ = (x₁ + x₂ + ... + xₙ) / n</span><br><br>
+        Media = Suma de todos los datos ÷ Cantidad de datos
+      </div>
+
+      <div class="math-box">
+        <span class="label">Mediana y Moda</span>
+        <strong>Mediana:</strong> dato del centro al ordenar de menor a mayor<br>
+        <strong>Moda:</strong> dato que más se repite en el conjunto
+      </div>
+
+      <div class="tip-box">
+        <strong>🎪 Contexto Carnaval</strong>
+        Las edades de 7 participantes en un concurso de cumbia son: 15, 18, 16, 15, 17, 20, 15 años.<br>
+        · Media = (15+18+16+15+17+20+15)/7 = <strong>116/7 ≈ 16.6 años</strong><br>
+        · Mediana = <strong>16</strong> (dato central al ordenar: 15,15,15,16,17,18,20)<br>
+        · Moda = <strong>15</strong> (se repite 3 veces)
+      </div>
+
+      <h3>Medidas de dispersión</h3>
+      <p>Indican qué tan "dispersos" o "concentrados" están los datos alrededor de la media:</p>
+
+      <div class="math-box">
+        <span class="label">Varianza y Desviación estándar</span>
+        Varianza σ² = Σ(xᵢ - x̄)² / n<br>
+        <span class="formula">Desviación estándar σ = √(Varianza)</span>
+      </div>
+
+      <h3>Probabilidad básica</h3>
+      <p>La probabilidad mide la posibilidad de que ocurra un evento. Sus valores van de 0 (imposible) a 1 (seguro).</p>
+
+      <div class="math-box">
+        <span class="label">Probabilidad clásica</span>
+        <span class="formula">P(A) = Casos favorables / Casos posibles</span>
+      </div>
+
+      <div class="tip-box">
+        <strong>🎯 Tipo de pregunta ICFES frecuente</strong>
+        "En una urna hay 5 bolas rojas, 3 azules y 2 amarillas. ¿Cuál es la probabilidad de sacar una bola azul?"<br>
+        P(azul) = 3/10 = <strong>0.3 = 30%</strong>
+      </div>
+
+      <h3>Interpretación de gráficas estadísticas</h3>
+      <p>Las pruebas ICFES incluyen gráficas de barras, histogramas, pictogramas y gráficas circulares. Pasos para interpretar:</p>
+      <ul>
+        <li>Lee el <strong>título</strong> y las <strong>etiquetas de los ejes</strong> antes de responder.</li>
+        <li>Identifica las <strong>unidades</strong> (personas, porcentaje, millones, etc.).</li>
+        <li>Busca el dato mayor, el menor y las diferencias entre categorías.</li>
+        <li>No confundas "mayor barra" con "mayor porcentaje" si los ejes no empiezan en cero.</li>
+      </ul>
+
+      <h3>🎬 Videos recomendados</h3>
+      <div class="video-embed" onclick="window.open('https://www.khanacademy.org/math/statistics-probability','_blank')">
+        <div class="play-btn">▶</div>
+        <p>Estadística y Probabilidad — Khan Academy</p>
+        <small>Haz clic para ver en khanacademy.org</small>
+      </div>
+
+      <div class="resources">
+        <strong>📚 Recursos para profundizar</strong>
+        <a href="https://www.khanacademy.org/math/statistics-probability" target="_blank">Khan Academy: Estadística y Probabilidad completo</a>
+        <a href="https://www.icfes.gov.co/documents/20143/1800084/Guia+de+orientacion+saber+11+2020.pdf" target="_blank">ICFES: Guía de orientación Saber 11°</a>
+        <a href="https://www.dane.gov.co/index.php/estadisticas-por-tema" target="_blank">DANE: Datos estadísticos reales de Colombia</a>
+        <a href="https://www.geogebra.org/m/ZmeyDPGX" target="_blank">GeoGebra: Estadística descriptiva interactiva</a>
+      </div>
+
+      <div class="tip-box">
+        <strong>✅ Resumen para el ICFES</strong>
+        Media = promedio ·<br> Mediana = centro ·<br> Moda = más frecuente · <br>σ pequeña = datos concentrados · <br> σ grande = datos dispersos · <br> P(A) ∈ [0,1] · <br> P(A) + P(Aᶜ) = 1
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openModal(id) {
+    document.getElementById(id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function closeOnOverlay(e, id) {
+    if (e.target === document.getElementById(id)) closeModal(id);
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay.open').forEach(m => {
+        m.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    }
+  });
+</script>
+</body>
+</html>
+
